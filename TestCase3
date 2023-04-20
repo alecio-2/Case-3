@@ -1,0 +1,114 @@
+package org.example;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
+
+public class FacebookTestCase3farapix {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        // Set the path to the chromedriver executable
+        System.setProperty("webdriver.chrome.driver", "D:\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
+
+        // Create ChromeOptions instance and disable notifications
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-notifications");
+
+        // Create a new instance of the ChromeDriver with options
+        WebDriver driver = new ChromeDriver(options);
+
+        // Navigate to the Facebook website
+        driver.get("https://www.facebook.com/");
+
+        // Find the cookie notification and click the "Accept" or "Okay" button
+        List<WebElement> cookieNotifications = driver.findElements(By.xpath("//button[@title='Tillåt endast nödvändiga cookies']"));
+        if (cookieNotifications.size() > 0) {
+            cookieNotifications.get(0).click();
+            System.out.println("Clicked on the cookie notification button");
+        } else {
+            System.out.println("No cookie notification found on the page");
+        }
+
+        // Test case 2: Posting functionality
+        // Enter login credentials and click login button
+        WebElement emailInput = driver.findElement(By.id("email"));
+        WebElement passwordInput = driver.findElement(By.id("pass"));
+        emailInput.sendKeys("farapix@yahoo.com");
+        passwordInput.sendKeys("Bybanu1990@facebook");
+        WebElement loginButton = driver.findElement(By.xpath("//button[@name='login']"));
+        loginButton.click();
+
+         // Verify that user is logged in and redirected to their profile page
+        String expectedUrl = "https://www.facebook.com/?sk=welcome";
+        String actualUrl = driver.getCurrentUrl();
+        if (actualUrl.equals(expectedUrl)) {
+            System.out.println("Login successful");
+        } else {
+            System.out.println("Login failed");
+        }
+        Thread.sleep(1000);
+
+        // Enter search query and click search button with aria-label="Search Facebook"
+        String keyword = "Alex";
+
+        WebElement searchBox = driver.findElement(By.xpath("//input[@aria-label='Search Facebook']"));
+        searchBox.sendKeys(keyword);
+        System.out.println("Text entered in searchbar");
+        Thread.sleep(1000);
+        searchBox.sendKeys(Keys.RETURN);
+        System.out.println("ENTER pressed");
+
+        Thread.sleep(1000);
+
+ /*       // Works very good!
+        List<WebElement> searchResults = driver.findElements(By.xpath("//*[contains(text(),'Alex')]"));
+        for (WebElement result : searchResults) {
+            System.out.println("Found search result with text: " + result.getText());
+        }*/
+
+
+        List<WebElement> elements = driver.findElements(By.xpath("//*[contains(text(),'" + keyword + "')]"));
+        if (elements.size() > 0) {
+            System.out.println("Found " + elements.size() + " elements with text containing '" + keyword + "'");
+            System.out.println("Search successful");
+        } else {
+            System.out.println("No elements found with text containing '" + keyword + "'");
+            System.out.println("Search failed");
+        }
+
+
+
+/*
+
+        Thread.sleep(5000);
+        // Verify that search results are accurate and relevant
+        String keyword = "ChatGPT";
+        List<WebElement> elements = driver.findElements(By.xpath("//div[contains(text(), 'keyword')]"));
+        if (elements.size() > 0) {
+            System.out.println("Found " + elements.size() + " elements with aria-label containing '" + keyword + "'");
+            for (WebElement element : elements) {
+                System.out.println(element.getAttribute("aria-label"));
+                System.out.println("Search successful");
+            }
+        } else {
+            System.out.println("No elements found with aria-label containing '" + keyword + "'");
+            System.out.println("Search failed");
+        }
+
+       WebElement searchResults = driver.findElement(By.xpath("//div[contains(text(),'ChatGPT')]"));
+        String searchResultText = searchResults.getText();
+        if (searchResultText.contains("ChatGPT")) {
+            System.out.println("Search successful");
+        } else {
+            System.out.println("Search failed");
+        }*/
+// Close the browser
+        driver.quit();
+
+    }
+}
